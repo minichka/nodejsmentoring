@@ -1,23 +1,37 @@
 import fs from 'fs';
+import events from 'events';
+export class DirWacher{
 
-class DirWacher{
-
-    constructor(path, delay){
+    constructor (path, delay){
         this.path = path;
         this.delay = delay;
         this.content = [];
     }
 
     watch(){
-        setInterval(this.checkDir,this.delay);
+        console.log(this.path);
+        setInterval(this.checkDir,this.delay,this);
+        // setInterval(function(){
+        //     let newContent = fs.readdir(this.path, function(err, list){
+        //         if (err) return err;
+        //         if(!list.equals(content)){
+        //             this.content = list;
+        //             console.log('Changed!');
+        //         }
+        //     });
+        // },this.delay, this);
     }
 
-    checkDir(){
-        let newContent = fs.readdir(this.path, function(err, list){
+    checkDir(dir) {
+        console.log(dir);
+        let newContent = fs.readdir(dir.path, function(err, list){
             if (err) return err;
-            if(!list.equals(this.content)){
-                this.content = list;
+            console.log(list)
+            if(!list.every(e => dir.content.includes(e))){
+                dir.content = list;
                 console.log('Changed!');
+            }else{
+                console.log('Nothing changed!');
             }
         });
 
@@ -25,4 +39,4 @@ class DirWacher{
 
 }
 
-module.exports = DirWacher;
+//module.exports = DirWacher;
